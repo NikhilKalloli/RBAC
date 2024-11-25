@@ -4,41 +4,89 @@ import { zValidator } from '@hono/zod-validator'
 import { registerSchema, loginSchema } from './schemas/auth'
 import { authMiddleware, rbacMiddleware } from './middleware/auth'
 import { createToken } from './utils/jwt'
-import { UserRole } from './types'
+import { UserRole, JWTPayload } from './types'
+import { UserService } from './services/userService'
+import { hashPassword, verifyPassword } from './utils/password'
+import { Env } from './types/env'
 
-const app = new Hono()
+// Define the Hono app with proper types
+type Variables = {
+  user: JWTPayload;
+};
+
+const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 
 app.use('/*', cors())
 
 // Public routes
 app.post('/auth/register', zValidator('json', registerSchema), async (c) => {
   const { email, password, role } = await c.req.json()
-  const token = await createToken({ sub: 'user-id', email, role })
+  const userService = new UserService(c.env)
+
+  // Check if user exists
+  const existingUser = await userService.getUserByEmail(email)
+  if (existingUser) {
+    return c.json({ error: 'User already exists' }, 400)
+  }
+
+  // Create new user
+  const hashedPassword = await hashPassword(password)
+  const user = await userService.createUser(email, hashedPassword, role || UserRole.USER)
+
+  const token = await createToken({ 
+    sub: user.id, 
+    email: user.email, 
+    role: user.role 
+  }, c.env)
   
   return c.json({ 
     message: 'User registered successfully',
-    token 
+    token,
+    user: {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt
+    }
   })
 })
 
 app.post('/auth/login', zValidator('json', loginSchema), async (c) => {
   const { email, password } = await c.req.json()
+  const userService = new UserService(c.env)
   
+  const user = await userService.getUserByEmail(email)
+  if (!user) {
+    return c.json({ error: 'Invalid credentials' }, 401)
+  }
+
+  const isValidPassword = await verifyPassword(password, user.password)
+  if (!isValidPassword) {
+    return c.json({ error: 'Invalid credentials' }, 401)
+  }
   
   const token = await createToken({ 
-    sub: 'user-id', 
-    email, 
-    role: UserRole.USER 
-  })
+    sub: user.id, 
+    email: user.email, 
+    role: user.role 
+  }, c.env)
   
-  return c.json({ token })
+  return c.json({ 
+    token,
+    user: {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt
+    }
+  })
 })
 
 // Protected routes
 app.use('/api/*', authMiddleware)
 
 app.get('/api/user/profile', async (c) => {
-  const user = c.get('user')
+  const user = c.get('user') as JWTPayload
   return c.json({ user })
 })
 
