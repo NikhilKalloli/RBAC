@@ -1,4 +1,4 @@
-import { Box, Button, Container, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Heading, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,32 +13,61 @@ export function Home() {
   const textColor = useColorModeValue('gray.600', 'gray.300');
 
   return (
-    <Container maxW="container.xl" py={20}>
+    <Box 
+      minH="calc(100vh - 64px)" 
+      w="100%"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      bg={useColorModeValue('gray.50', 'gray.900')}
+      position="absolute"
+      top="64px"
+      left="0"
+      right="0"
+      bottom="0"
+    >
       <MotionBox
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
+        maxW="container.lg"
+        w="full"
+        p={8}
       >
-        <Stack spacing={8} alignItems="center" textAlign="center">
-          <Heading
-            as={motion.h1}
+        <Stack 
+          spacing={12} 
+          alignItems="center" 
+          justifyContent="center"
+          h="full"
+        >
+          <MotionBox
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
-            // @ts-ignore
             transition={{ duration: 0.5 }}
-            fontSize={{ base: '4xl', md: '6xl' }}
-            fontWeight="bold"
+            textAlign="center"
           >
-            Welcome to RBAC System
-          </Heading>
-          
-          <Text fontSize="xl" color={textColor} maxW="2xl">
-            A secure role-based access control system with authentication and authorization.
-          </Text>
+            <Heading
+              fontSize={{ base: '4xl', md: '6xl' }}
+              fontWeight="bold"
+              lineHeight="shorter"
+              mb={6}
+            >
+              Welcome to RBAC System
+            </Heading>
+            
+            <Text 
+              fontSize={{ base: 'lg', md: 'xl' }} 
+              color={textColor} 
+              maxW="2xl" 
+              mx="auto"
+            >
+              A secure role-based access control system with authentication and authorization.
+            </Text>
+          </MotionBox>
 
           <Stack
             direction={{ base: 'column', md: 'row' }}
-            spacing={4}
+            spacing={6}
             w="full"
             maxW="md"
             justify="center"
@@ -49,6 +78,9 @@ export function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/login')}
+              fontSize="xl"
+              py={8}
+              px={12}
             >
               Login
             </MotionButton>
@@ -59,23 +91,27 @@ export function Home() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/register')}
+              fontSize="xl"
+              py={8}
+              px={12}
             >
               Register
             </MotionButton>
           </Stack>
 
           <MotionBox
-            mt={8}
-            p={6}
+            p={8}
             bg={bgColor}
             rounded="xl"
-            shadow="md"
+            shadow="xl"
             whileHover={{ y: -5 }}
             transition={{ duration: 0.2 }}
+            maxW="2xl"
+            w="full"
           >
-            <Stack spacing={4}>
-              <Heading size="md">Features</Heading>
-              <Stack spacing={2} textAlign="left">
+            <Stack spacing={6}>
+              <Heading size="lg" textAlign="center">Features</Heading>
+              <Stack spacing={4} fontSize="lg">
                 <Text>✨ Secure Authentication</Text>
                 <Text>🔒 Role-Based Access Control</Text>
                 <Text>👥 User Management</Text>
@@ -85,6 +121,6 @@ export function Home() {
           </MotionBox>
         </Stack>
       </MotionBox>
-    </Container>
+    </Box>
   );
 } 

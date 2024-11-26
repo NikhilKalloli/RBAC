@@ -7,9 +7,10 @@ import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
-import { AdminPanel } from './pages/AdminPanel';
 import { UserRole } from './types';
 import theme from './theme';
+import { AdminOnly } from './pages/AdminOnly';
+import { ModeratorOnly } from './pages/ModeratorOnly';
 
 function App() {
   return (
@@ -34,12 +35,22 @@ function App() {
                 }
               />
 
-              {/* Admin Routes */}
+              {/* Admin Only Route */}
               <Route
-                path="/admin"
+                path="/admin-only"
                 element={
-                  <ProtectedRoute allowedRoles={[UserRole.ADMIN, UserRole.SUPER_ADMIN]}>
-                    <AdminPanel />
+                  <ProtectedRoute allowedRoles={[UserRole.ADMIN]}>
+                    <AdminOnly />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Moderator Only Route */}
+              <Route
+                path="/moderator-only"
+                element={
+                  <ProtectedRoute allowedRoles={[UserRole.MODERATOR]}>
+                    <ModeratorOnly />
                   </ProtectedRoute>
                 }
               />
