@@ -21,4 +21,13 @@ export class UserService {
     const userData = await this.env.MY_KV.get(`user:${email}`);
     return userData ? JSON.parse(userData) : null;
   }
+
+  async blacklistToken(token: string): Promise<void> {
+    const expiry = 24 * 60 * 60; // 24 hours in seconds
+    await this.env.MY_KV.put(`blacklist:${token}`, 'true', { expirationTtl: expiry });
+  }
+
+  async isTokenBlacklisted(token: string): Promise<boolean> {
+    return await this.env.MY_KV.get(`blacklist:${token}`) !== null;
+  }
 } 

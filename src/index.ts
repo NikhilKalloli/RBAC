@@ -16,7 +16,14 @@ type Variables = {
 
 const app = new Hono<{ Bindings: Env; Variables: Variables }>()
 
-app.use('/*', cors())
+app.use('/*', cors({
+  origin: ['http://localhost:5173', 'http://localhost:4173', 'https://your-frontend-domain.pages.dev'],
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization'],
+  exposeHeaders: ['Content-Length', 'X-Requested-With'],
+  maxAge: 86400,
+  credentials: true
+}))
 
 // Public routes
 app.post('/auth/register', zValidator('json', registerSchema), async (c) => {
@@ -95,5 +102,15 @@ app.get('/api/admin', rbacMiddleware([UserRole.ADMIN, UserRole.SUPER_ADMIN]),
   async (c) => {
     return c.json({ message: 'Admin access granted' })
 })
+
+app.post('/auth/logout', authMiddleware, async (c) => {
+  const authHeader = c.req.header('Authorization');
+  const token = authHeader?.split(' ')[1] || '';
+  
+  const userService = new UserService(c.env);
+  await userService.blacklistToken(token);
+  
+  return c.json({ message: 'Logged out successfully' });
+});
 
 export default app
