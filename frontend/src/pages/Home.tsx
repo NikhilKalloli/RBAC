@@ -115,7 +115,6 @@ export function Home() {
                 <Text>✨ Secure Authentication</Text>
                 <Text>🔒 Role-Based Access Control</Text>
                 <Text>👥 User Management</Text>
-                <Text>🚀 Beautiful UI/UX</Text>
               </Stack>
             </Stack>
           </MotionBox>
