@@ -69,6 +69,13 @@ Role-specific features:
 
 ---
 
+## Screenshots:
+![Screenshot 2024-11-27 185614](https://github.com/user-attachments/assets/53b2f57d-cde8-49bb-966e-714bc4b70013)
+![Screenshot 2024-11-27 191001](https://github.com/user-attachments/assets/4b949773-d9f6-4009-b358-fce91bdfe13b)
+
+
+
+
 ## API Endpoints & Data Flow
 
 ### 1. Authentication Endpoints
