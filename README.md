@@ -114,6 +114,7 @@ Role-specific features:
   "createdAt": "timestamp",
   "lastLogin": "timestamp"
 }
+```
 
 # System Architecture Documentation
 
@@ -129,17 +130,6 @@ Role-specific features:
 - **Update**: Atomic updates for profile changes
 - **Delete**: Immediate invalidation for logouts
 
-## Performance Optimization
-- **Cached reads** for frequent access patterns
-- **Batch writes** for bulk operations
-- **TTL** for session management
-- **Index-based queries** for user lookup
-
-## Security Measures
-- **Encrypted storage**
-- **Rate limiting** per key
-- **Backup and recovery** procedures
-- **Access logging** and monitoring
 
 ## Code Organization
 The project follows a modular architecture:
